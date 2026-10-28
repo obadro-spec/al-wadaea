@@ -6,6 +6,9 @@ import {
   Scale,
   ShieldCheck,
   TimerReset,
+  Plus,
+  Trash2,
+  X,
 } from "lucide-react";
 import {
   money,
@@ -33,6 +36,49 @@ export function Advisor() {
   const [selectedId, setSelectedId] = useState(SEED[0]!.id);
   const [tenor, setTenor] = useState<number | "auto">("auto");
   const [amountText, setAmountText] = useState("86038");
+
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [newBank, setNewBank] = useState("البلاد");
+  const [newAmount, setNewAmount] = useState("");
+  const [newRate, setNewRate] = useState("");
+  const [newMonths, setNewMonths] = useState<number>(6);
+  const [newStart, setNewStart] = useState("2026-10-28");
+  const [newMaturity, setNewMaturity] = useState("");
+
+  const handleAddDeposit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const amountNum = parseFloat(newAmount);
+    const rateNum = parseFloat(newRate);
+    if (!amountNum || !rateNum || !newMaturity) return;
+
+    const newDep: Deposit = {
+      id: `dep-${Date.now()}`,
+      bank: newBank,
+      amount: amountNum,
+      rate: rateNum,
+      months: newMonths,
+      start: newStart,
+      maturity: newMaturity,
+    };
+
+    setDeposits((prev) => [...prev, newDep]);
+    setSelectedId(newDep.id);
+    setShowAddModal(false);
+    setNewAmount("");
+    setNewRate("");
+    setNewMaturity("");
+  };
+
+  const handleDeleteDeposit = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (window.confirm("هل تريد حذف هذا العقد من محفظتك؟")) {
+      setDeposits((prev) => prev.filter((d) => d.id !== id));
+      if (selectedId === id) {
+        const remaining = deposits.filter((d) => d.id !== id);
+        if (remaining.length) setSelectedId(remaining[0]!.id);
+      }
+    }
+  };
 
   useEffect(() => {
     const tick = () => setToday(riyadhToday());
@@ -153,8 +199,21 @@ export function Advisor() {
       </section>
 
       <section className="mb-6">
-        <div className="mb-3 flex items-end justify-between gap-3">
-          <h2 className="text-lg font-semibold">عقودك بالأولوية</h2>
+        <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <h2 className="text-lg font-semibold">عقودك بالأولوية</h2>
+            <button
+              type="button"
+              onClick={() => {
+                setNewStart(today);
+                setShowAddModal(true);
+              }}
+              className="inline-flex items-center gap-1.5 rounded-full bg-pine px-3 py-1.5 text-xs font-semibold text-pine-ink hover:opacity-90 transition-opacity shadow-xs"
+            >
+              <Plus className="size-3.5" />
+              إضافة وديعة جديدة
+            </button>
+          </div>
           <ZakatToggle on={zakatOn} setOn={setZakatOn} />
         </div>
         <ul className="grid gap-3">
@@ -165,6 +224,7 @@ export function Advisor() {
                 today={today}
                 active={item.view.deposit.id === selected?.view.deposit.id}
                 onSelect={() => setSelectedId(item.view.deposit.id)}
+                onDelete={(e) => handleDeleteDeposit(item.view.deposit.id, e)}
               />
             </li>
           ))}
@@ -230,6 +290,125 @@ export function Advisor() {
       <p className="mt-6 text-xs leading-relaxed text-faint">
         ليست استشارة استثمارية ولا فتوى زكاة. الأرقام منقولة من صور حساب @Diary24H العامة وقد تتغير في اليوم نفسه. الزكاة 2.5% هنا قاعدة ترتيب نشرها الحساب، لا احتساب شرعي لحولك. تأكد من الحد الأدنى ونص العقد داخل التطبيق قبل التحويل.
       </p>
+
+      {showAddModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs">
+          <div className="relative w-full max-w-md rounded-2xl border border-line bg-surface p-6 shadow-2xl">
+            <div className="flex items-center justify-between pb-3 border-b border-line">
+              <h3 className="text-lg font-semibold text-ink">إضافة عقد وديعة جديد</h3>
+              <button
+                type="button"
+                onClick={() => setShowAddModal(false)}
+                className="text-muted hover:text-ink p-1 rounded-lg"
+              >
+                <X className="size-5" />
+              </button>
+            </div>
+            <form onSubmit={handleAddDeposit} className="mt-4 space-y-4">
+              <div>
+                <label className="block text-xs font-medium text-muted mb-1">اسم البنك</label>
+                <select
+                  value={newBank}
+                  onChange={(e) => setNewBank(e.target.value)}
+                  className="w-full rounded-xl border border-line bg-bg px-3 py-2 text-sm text-ink"
+                >
+                  <option value="البلاد">بنك البلاد</option>
+                  <option value="الإنماء">مصرف الإنماء</option>
+                  <option value="عز">تطبيق عز (الإنماء)</option>
+                  <option value="الراجحي">مصرف الراجحي</option>
+                  <option value="الجزيرة">بنك الجزيرة</option>
+                  <option value="الأهلي">البنك الأهلي السعودي (SNB)</option>
+                  <option value="الرياض">بنك الرياض</option>
+                  <option value="D360">بنك D360</option>
+                  <option value="ميم">بنك ميم (meem)</option>
+                  <option value="بنك آخر">بنك آخر</option>
+                </select>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-medium text-muted mb-1">المبلغ (ر.س)</label>
+                  <input
+                    type="number"
+                    required
+                    min="1"
+                    placeholder="مثال: 50000"
+                    value={newAmount}
+                    onChange={(e) => setNewAmount(e.target.value)}
+                    className="w-full rounded-xl border border-line bg-bg px-3 py-2 text-sm text-ink tabular-nums"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-muted mb-1">النسبة السنوية (%)</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    required
+                    placeholder="مثال: 5.50"
+                    value={newRate}
+                    onChange={(e) => setNewRate(e.target.value)}
+                    className="w-full rounded-xl border border-line bg-bg px-3 py-2 text-sm text-ink tabular-nums"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-3 gap-3">
+                <div>
+                  <label className="block text-xs font-medium text-muted mb-1">المدة (أشهر)</label>
+                  <select
+                    value={newMonths}
+                    onChange={(e) => setNewMonths(Number(e.target.value))}
+                    className="w-full rounded-xl border border-line bg-bg px-3 py-2 text-sm text-ink"
+                  >
+                    <option value={1}>شهر</option>
+                    <option value={3}>3 أشهر</option>
+                    <option value={6}>6 أشهر</option>
+                    <option value={9}>9 أشهر</option>
+                    <option value={12}>12 شهر</option>
+                    <option value={24}>24 شهر</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-muted mb-1">تاريخ البداية</label>
+                  <input
+                    type="date"
+                    required
+                    value={newStart}
+                    onChange={(e) => setNewStart(e.target.value)}
+                    className="w-full rounded-xl border border-line bg-bg px-3 py-2 text-sm text-ink"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-muted mb-1">تاريخ الاستحقاق</label>
+                  <input
+                    type="date"
+                    required
+                    value={newMaturity}
+                    onChange={(e) => setNewMaturity(e.target.value)}
+                    className="w-full rounded-xl border border-line bg-bg px-3 py-2 text-sm text-ink"
+                  />
+                </div>
+              </div>
+
+              <div className="mt-5 flex justify-end gap-2 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setShowAddModal(false)}
+                  className="rounded-xl border border-line px-4 py-2 text-sm text-muted hover:bg-surface-2"
+                >
+                  إلغاء
+                </button>
+                <button
+                  type="submit"
+                  className="rounded-xl bg-pine px-5 py-2 text-sm font-semibold text-pine-ink hover:opacity-90"
+                >
+                  حفظ الوديعة
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
@@ -306,11 +485,13 @@ function DepositCard({
   today,
   active,
   onSelect,
+  onDelete,
 }: {
   advice: Advice;
   today: string;
   active: boolean;
   onSelect: () => void;
+  onDelete: (e: React.MouseEvent) => void;
 }) {
   const { deposit } = advice.view;
   const pick = advice.pick;
@@ -340,9 +521,19 @@ function DepositCard({
           </div>
           <p className="mt-1 text-sm text-muted">{advice.headline}</p>
         </div>
-        <div className="text-end">
-          <div className="text-sm font-semibold tabular-nums">{leftLabel(advice.view.left)}</div>
-          <div className="text-xs text-faint">{formatDay(deposit.maturity)}</div>
+        <div className="flex items-center gap-2">
+          <div className="text-end">
+            <div className="text-sm font-semibold tabular-nums">{leftLabel(advice.view.left)}</div>
+            <div className="text-xs text-faint">{formatDay(deposit.maturity)}</div>
+          </div>
+          <button
+            type="button"
+            title="حذف العقد"
+            onClick={onDelete}
+            className="p-1.5 text-muted hover:text-red-500 rounded-lg hover:bg-surface-2 transition-colors"
+          >
+            <Trash2 className="size-3.5" />
+          </button>
         </div>
       </div>
       <dl className="mt-3 grid grid-cols-2 gap-2 text-xs sm:grid-cols-4">
