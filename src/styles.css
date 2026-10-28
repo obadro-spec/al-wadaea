@@ -1,0 +1,46 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #f3efe6;
+  --color-ink: #1c1915;
+  --color-muted: #6f675e;
+  --color-faint: #8a8176;
+  --color-surface: #fbf9f4;
+  --color-surface-2: #f7f1e6;
+  --color-line: #e3d9c8;
+  --color-pine: #0e6b4f;
+  --color-pine-ink: #f4fbf7;
+  --color-copper: #9a3412;
+  --color-copper-soft: #f8ebe3;
+  --color-gold: #8a6a32;
+  --color-hold: #3f5348;
+  --font-sans: "IBM Plex Sans Arabic", "Segoe UI", sans-serif;
+  --font-display: "Amiri", "IBM Plex Sans Arabic", serif;
+  --radius: 0.875rem;
+}
+
+@layer base {
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+
+  html {
+    background: var(--color-bg);
+    color: var(--color-ink);
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background:
+      radial-gradient(ellipse 80% 40% at 100% -10%, #efe4d0 0%, transparent 55%),
+      var(--color-bg);
+    min-height: 100vh;
+    line-height: 1.55;
+  }
+
+  ::selection {
+    background: #d7efe4;
+    color: var(--color-ink);
+  }
+}
