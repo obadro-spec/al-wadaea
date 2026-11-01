@@ -124,7 +124,13 @@ export function formatDay(iso: string): string {
 }
 
 export function leftLabel(days: number): string {
-  if (days < 0) return `مضى منذ ${Math.abs(days)} يوم`;
+  if (days < 0) {
+    const n = Math.abs(days);
+    if (n === 1) return "مضى منذ يوم";
+    if (n === 2) return "مضى منذ يومين";
+    if (n <= 10) return `مضى منذ ${n} أيام`;
+    return `مضى منذ ${n} يوماً`;
+  }
   if (days === 0) return "تستحق اليوم";
   if (days === 1) return "تستحق غداً";
   if (days === 2) return "بعد يومين";

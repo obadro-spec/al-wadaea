@@ -1,6 +1,6 @@
-/** Indicative Sharia deposit rates transcribed from @Diary24H public tables.
- *  Albilad: card dated 25 Oct 2026. Other banks: board dated 24 Oct 2026.
- *  Rates move daily — confirm in the bank app on the morning you subscribe.
+/** Rates from @Diary24H «نسب الودائع الشرعية» 31 Oct 2026.
+ *  https://x.com/Diary24H/status/2116532015793369588
+ *  Confirm in the bank app the morning you subscribe.
  */
 
 export type Zakat = "customer" | "exempt" | "paid";
@@ -20,24 +20,20 @@ export type Offer = {
   ease: number;
 };
 
-const ALBILAD = "2026-10-25";
-const BOARD = "2026-10-24";
-
-const SOURCE: Record<string, string> = {
-  [ALBILAD]: "https://x.com/Diary24H/status/2114376077128708476",
-  [BOARD]: "https://x.com/Diary24H/status/2114012805464457641",
-};
+export const AS_OF = "2026-10-31";
+export const SOURCE_URL = "https://x.com/Diary24H/status/2116532015793369588";
 
 function rows(
-  base: Omit<Offer, "id" | "tenorMonths" | "rate" | "sourceUrl">,
+  base: Omit<Offer, "id" | "tenorMonths" | "rate" | "sourceUrl" | "asOf">,
   rates: Record<number, number>,
 ): Offer[] {
   return Object.entries(rates).map(([tenor, rate]) => ({
     ...base,
+    asOf: AS_OF,
     id: `${base.bank}-${base.product}-${base.min}-${tenor}`,
     tenorMonths: Number(tenor),
     rate,
-    sourceUrl: SOURCE[base.asOf] ?? SOURCE[BOARD]!,
+    sourceUrl: SOURCE_URL,
   }));
 }
 
@@ -54,7 +50,6 @@ const awaed = (
       channel: "تطبيق",
       min,
       max,
-      asOf: ALBILAD,
       ease: 3,
     },
     rates,
@@ -73,80 +68,79 @@ const wakala = (
       channel: "تطبيق",
       min,
       max,
-      asOf: ALBILAD,
       ease: 3,
     },
     rates,
   );
 
 export const OFFERS: Offer[] = [
-  ...awaed(50_000, 99_999.99, { 6: 6.26, 9: 6.36, 12: 5.84, 18: 5.75, 24: 5.77 }),
+  ...awaed(50_000, 99_999.99, { 6: 5.86, 9: 5.96, 12: 6.0, 18: 5.72, 24: 5.74 }),
   ...awaed(100_000, 999_999.99, {
-    1: 4.94,
+    1: 4.89,
     2: 5.48,
     3: 5.58,
     4: 5.68,
-    6: 6.26,
-    9: 6.36,
-    12: 5.84,
-    18: 5.75,
-    24: 5.77,
+    6: 5.86,
+    9: 5.96,
+    12: 6.0,
+    18: 5.72,
+    24: 5.74,
   }),
   ...awaed(1_000_000, 4_999_999.99, {
-    1: 5.04,
+    1: 4.99,
     2: 5.58,
     3: 5.68,
     4: 5.78,
-    6: 6.36,
-    9: 6.46,
-    12: 5.94,
-    18: 5.85,
-    24: 5.88,
+    6: 5.96,
+    9: 6.06,
+    12: 6.1,
+    18: 5.82,
+    24: 5.84,
   }),
   ...awaed(5_000_000, Number.POSITIVE_INFINITY, {
-    1: 5.14,
+    1: 5.01,
     2: 5.68,
     3: 5.78,
     4: 5.88,
-    6: 6.46,
-    9: 6.46,
-    12: 6.04,
-    18: 5.95,
-    24: 5.98,
+    6: 6.06,
+    9: 6.16,
+    12: 6.2,
+    18: 5.92,
+    24: 5.94,
   }),
-  ...wakala(50_000, 99_999.99, { 6: 5.96, 9: 6.06, 12: 5.54, 18: 5.45, 24: 5.47 }),
+  ...wakala(50_000, 99_999.99, { 6: 5.56, 9: 5.66, 12: 5.7, 18: 5.42, 24: 5.44 }),
   ...wakala(100_000, 999_999.99, {
-    1: 4.64,
+    1: 4.59,
     2: 5.18,
     3: 5.28,
     4: 5.38,
-    6: 5.96,
-    9: 6.06,
-    12: 5.54,
-    18: 5.45,
-    24: 5.47,
+    6: 5.56,
+    9: 5.66,
+    12: 5.7,
+    18: 5.42,
+    24: 5.44,
   }),
   ...wakala(1_000_000, 4_999_999.99, {
-    1: 4.74,
+    1: 4.69,
     2: 5.28,
     3: 5.38,
     4: 5.48,
-    6: 6.06,
-    9: 6.06,
-    12: 5.64,
-    18: 5.55,
-    24: 5.57,
+    6: 5.66,
+    9: 5.76,
+    12: 5.8,
+    18: 5.52,
+    24: 5.54,
   }),
   ...wakala(5_000_000, Number.POSITIVE_INFINITY, {
-    1: 4.84,
+    1: 4.79,
     2: 5.38,
     3: 5.48,
     4: 5.58,
-    6: 6.16,
-    9: 6.16,
-    12: 5.74,
-    18: 5.65,
-    24: 5.67,
+    6: 5.76,
+    9: 5.86,
+    12: 5.9,
+    18: 5.62,
+    24: 5.64,
   }),
   ...rows(
     {
@@ -156,10 +150,9 @@ export const OFFERS: Offer[] = [
       channel: "تطبيق",
       min: 50_000,
       max: 199_999.99,
-      asOf: BOARD,
       ease: 2,
     },
-    { 3: 5.46, 6: 6.18, 9: 5.76, 12: 5.34, 24: 5.58, 36: 5.62 },
+    { 3: 5.42, 6: 5.99, 9: 5.78, 12: 5.56, 24: 5.49, 36: 5.53 },
   ),
   ...rows(
     {
@@ -169,10 +162,9 @@ export const OFFERS: Offer[] = [
       channel: "تطبيق",
       min: 200_000,
       max: 5_000_000,
-      asOf: BOARD,
       ease: 2,
     },
-    { 1: 5.11, 2: 5.29, 3: 5.46, 6: 6.18, 9: 5.76, 12: 5.34, 24: 5.58, 36: 5.62 },
+    { 1: 4.91, 2: 5.27, 3: 5.46, 6: 5.99, 9: 5.78, 12: 5.56, 24: 5.49, 36: 5.53 },
   ),
   ...rows(
     {
@@ -182,10 +174,9 @@ export const OFFERS: Offer[] = [
       channel: "تطبيق",
       min: 1_000,
       max: 49_999.99,
-      asOf: BOARD,
       ease: 1,
     },
-    { 3: 5.24, 6: 5.93, 9: 5.53, 12: 5.13, 24: 5.35, 36: 5.39 },
+    { 3: 5.2, 6: 5.75, 9: 5.54, 12: 5.34, 24: 5.27, 36: 5.31 },
   ),
   ...rows(
     {
@@ -195,10 +186,9 @@ export const OFFERS: Offer[] = [
       channel: "تطبيق",
       min: 50_000,
       max: 199_999.99,
-      asOf: BOARD,
       ease: 1,
     },
-    { 3: 5.46, 6: 6.18, 9: 5.76, 12: 5.34, 24: 5.58, 36: 5.62 },
+    { 3: 5.42, 6: 5.99, 9: 5.78, 12: 5.56, 24: 5.49, 36: 5.53 },
   ),
   ...rows(
     {
@@ -208,10 +198,9 @@ export const OFFERS: Offer[] = [
       channel: "تطبيق",
       min: 200_000,
       max: 5_000_000,
-      asOf: BOARD,
       ease: 1,
     },
-    { 1: 5.11, 2: 5.29, 3: 5.46, 6: 6.18, 9: 5.76, 12: 5.34, 24: 5.58, 36: 5.62 },
+    { 1: 4.91, 2: 5.27, 3: 5.46, 6: 5.99, 9: 5.78, 12: 5.56, 24: 5.49, 36: 5.53 },
   ),
   ...rows(
     {
@@ -221,7 +210,6 @@ export const OFFERS: Offer[] = [
       channel: "تطبيق",
       min: 1_000,
       max: 24_999.99,
-      asOf: BOARD,
       ease: 2,
     },
     {
@@ -249,7 +237,6 @@ export const OFFERS: Offer[] = [
       channel: "تطبيق",
       min: 25_000,
       max: 100_000_000,
-      asOf: BOARD,
       ease: 2,
     },
     {
@@ -279,10 +266,9 @@ export const OFFERS: Offer[] = [
       channel: "تطبيق",
       min: 25_000,
       max: 99_999.99,
-      asOf: BOARD,
       ease: 1,
     },
-    { 1: 4, 3: 4.29, 6: 4.88, 9: 4.97, 12: 4.81 },
+    { 1: 4.06, 3: 4.35, 6: 5.01, 9: 5.07, 12: 4.89 },
   ),
   ...rows(
     {
@@ -292,10 +278,9 @@ export const OFFERS: Offer[] = [
       channel: "فرع",
       min: 100_000,
       max: Number.POSITIVE_INFINITY,
-      asOf: BOARD,
       ease: 0,
     },
-    { 1: 4.24, 2: 4.43, 6: 5.01, 9: 4.95, 12: 4.9 },
+    { 1: 4.93, 2: 5.12, 3: 5.3, 6: 5.75, 9: 5.42, 12: 5.1 },
   ),
   ...rows(
     {
@@ -305,10 +290,9 @@ export const OFFERS: Offer[] = [
       channel: "تطبيق",
       min: 25_000,
       max: Number.POSITIVE_INFINITY,
-      asOf: BOARD,
       ease: 1,
     },
-    { 1: 4.62, 3: 5.01, 6: 5.69, 12: 5.14 },
+    { 1: 4.64, 3: 4.97, 6: 4.92, 12: 4.98 },
   ),
   ...rows(
     {
@@ -318,10 +302,9 @@ export const OFFERS: Offer[] = [
       channel: "تطبيق",
       min: 25_000,
       max: 200_000,
-      asOf: BOARD,
       ease: 1,
     },
-    { 1: 4.26, 3: 5.18, 6: 5.86, 12: 5.26 },
+    { 1: 4.28, 3: 5.13, 6: 5.66, 12: 5.48 },
   ),
   ...rows(
     {
@@ -331,10 +314,9 @@ export const OFFERS: Offer[] = [
       channel: "تطبيق",
       min: 200_001,
       max: 5_000_000,
-      asOf: BOARD,
       ease: 1,
     },
-    { 1: 4.31, 3: 5.23, 6: 5.91, 12: 5.31 },
+    { 1: 4.33, 3: 5.18, 6: 5.71, 12: 5.53 },
   ),
   ...rows(
     {
@@ -344,10 +326,9 @@ export const OFFERS: Offer[] = [
       channel: "تطبيق",
       min: 25_000,
       max: 5_000_000,
-      asOf: BOARD,
       ease: 1,
     },
-    { 1: 3.5, 2: 4.22, 3: 4.57, 6: 5.4, 9: 5.4, 12: 4.55 },
+    { 1: 3.5, 2: 4.13, 3: 4.26, 6: 5.05, 9: 5.05, 12: 4.58 },
   ),
   ...rows(
     {
@@ -357,10 +338,9 @@ export const OFFERS: Offer[] = [
       channel: "تطبيق",
       min: 50_000,
       max: 2_500_000,
-      asOf: BOARD,
       ease: 1,
     },
-    { 1: 4.5, 3: 4.92, 6: 5.7, 12: 4.94, 24: 5.17 },
+    { 1: 4.52, 3: 4.88, 6: 5.51, 12: 5.16, 24: 5.05 },
   ),
   ...rows(
     {
@@ -370,10 +350,9 @@ export const OFFERS: Offer[] = [
       channel: "تطبيق",
       min: 2_500_000,
       max: Number.POSITIVE_INFINITY,
-      asOf: BOARD,
       ease: 1,
     },
-    { 1: 4.63, 3: 5.05, 6: 5.83, 12: 5.07, 24: 5.3 },
+    { 1: 4.65, 3: 5.01, 6: 5.64, 12: 5.29, 24: 5.29 },
   ),
   ...rows(
     {
@@ -383,10 +362,9 @@ export const OFFERS: Offer[] = [
       channel: "فرع",
       min: 100_000,
       max: 999_999,
-      asOf: BOARD,
       ease: 0,
     },
-    { 3: 4.65, 6: 4.84, 9: 4.85, 12: 4.9 },
+    { 3: 4.55, 6: 5.29, 9: 5.09, 12: 4.91 },
   ),
   ...rows(
     {
@@ -396,7 +374,6 @@ export const OFFERS: Offer[] = [
       channel: "تطبيق",
       min: 1_000,
       max: Number.POSITIVE_INFINITY,
-      asOf: BOARD,
       ease: 1,
     },
     { 1: 4.5, 2: 4.5, 3: 5, 6: 5.25, 9: 5.5, 12: 6 },
@@ -409,10 +386,9 @@ export const OFFERS: Offer[] = [
       channel: "تطبيق",
       min: 40_000,
       max: 249_999,
-      asOf: BOARD,
       ease: 1,
     },
-    { 2: 4.61, 3: 4.66, 4: 5.16, 6: 4.7 },
+    { 2: 4.44, 3: 4.49, 4: 5.3, 5: 5.01, 6: 4.67 },
   ),
   ...rows(
     {
@@ -422,10 +398,9 @@ export const OFFERS: Offer[] = [
       channel: "تطبيق",
       min: 250_000,
       max: 500_000,
-      asOf: BOARD,
       ease: 1,
     },
-    { 2: 4.71, 3: 4.76, 4: 5.26, 6: 4.8 },
+    { 2: 4.54, 3: 4.59, 4: 5.4, 5: 5.11, 6: 4.77 },
   ),
   ...rows(
     {
@@ -435,7 +410,6 @@ export const OFFERS: Offer[] = [
       channel: "فرع",
       min: 50_000,
       max: 199_999,
-      asOf: BOARD,
       ease: 0,
     },
     { 1: 4.3, 2: 4.4, 3: 4.55, 6: 4.65, 9: 4.75, 12: 4.75 },
@@ -448,7 +422,6 @@ export const OFFERS: Offer[] = [
       channel: "فرع",
       min: 200_000,
       max: 499_999,
-      asOf: BOARD,
       ease: 0,
     },
     { 1: 4.32, 2: 4.42, 3: 4.57, 6: 4.67, 9: 4.77, 12: 4.77 },
