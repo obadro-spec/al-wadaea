@@ -32,11 +32,12 @@
 
   body {
     font-family: var(--font-sans);
+    font-size: 1.125rem;
     background:
       radial-gradient(ellipse 80% 40% at 100% -10%, #efe4d0 0%, transparent 55%),
       var(--color-bg);
     min-height: 100vh;
-    line-height: 1.55;
+    line-height: 1.6;
   }
 
   ::selection {

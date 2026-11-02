@@ -444,7 +444,7 @@ export function profitFor(amount: number, annualRate: number, months: number): n
 }
 
 export function money(n: number): string {
-  return new Intl.NumberFormat("ar-SA-u-nu-latn", {
+  return new Intl.NumberFormat("en-US", {
     minimumFractionDigits: 0,
     maximumFractionDigits: 2,
   }).format(n);
