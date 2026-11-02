@@ -1,22 +1,31 @@
 @import "tailwindcss";
 
 @theme {
-  --color-bg: #f3efe6;
-  --color-ink: #1c1915;
-  --color-muted: #6f675e;
-  --color-faint: #8a8176;
-  --color-surface: #fbf9f4;
-  --color-surface-2: #f7f1e6;
-  --color-line: #e3d9c8;
-  --color-pine: #0e6b4f;
-  --color-pine-ink: #f4fbf7;
-  --color-copper: #9a3412;
-  --color-copper-soft: #f8ebe3;
-  --color-gold: #8a6a32;
-  --color-hold: #3f5348;
-  --font-sans: "IBM Plex Sans Arabic", "Segoe UI", sans-serif;
-  --font-display: "Amiri", "IBM Plex Sans Arabic", serif;
-  --radius: 0.875rem;
+  --color-bg: #f8fafc;
+  --color-ink: #0f172a;
+  --color-navy: #0b192c;
+  --color-navy-dark: #06101e;
+  --color-muted: #475569;
+  --color-faint: #64748b;
+  --color-surface: #ffffff;
+  --color-surface-2: #f1f5f9;
+  --color-line: #e2e8f0;
+  --color-line-dark: #cbd5e1;
+  --color-pine: #059669;
+  --color-pine-light: #10b981;
+  --color-pine-soft: #ecfdf5;
+  --color-pine-ink: #ffffff;
+  --color-blue-brand: #1d4ed8;
+  --color-blue-soft: #eff6ff;
+  --color-amber-brand: #d97706;
+  --color-amber-soft: #fef3c7;
+  --color-copper: #c2410c;
+  --color-copper-soft: #fff7ed;
+  --color-gold: #b45309;
+  --color-hold: #334155;
+  --font-sans: "IBM Plex Sans Arabic", "Segoe UI", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-display: "IBM Plex Sans Arabic", "Segoe UI", sans-serif;
+  --radius: 1rem;
 }
 
 @layer base {
@@ -28,20 +37,23 @@
   html {
     background: var(--color-bg);
     color: var(--color-ink);
+    scroll-behavior: smooth;
   }
 
   body {
     font-family: var(--font-sans);
     font-size: 1.125rem;
     background:
-      radial-gradient(ellipse 80% 40% at 100% -10%, #efe4d0 0%, transparent 55%),
+      radial-gradient(1000px 400px at 50% -50px, #e2e8f0 0%, transparent 80%),
       var(--color-bg);
     min-height: 100vh;
     line-height: 1.6;
+    color: var(--color-ink);
+    -webkit-font-smoothing: antialiased;
   }
 
   ::selection {
-    background: #d7efe4;
-    color: var(--color-ink);
+    background: #059669;
+    color: #ffffff;
   }
 }
